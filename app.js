@@ -1,5 +1,6 @@
 // ==========================================
 // LUFFY STORE - APP.JS
+// PRODUCTS + ORDER SYSTEM
 // ==========================================
 
 let products = [];
@@ -75,7 +76,7 @@ function displayProducts(items) {
       ? `
         <img
           src="${escapeHTML(product.image_url)}"
-          alt="${escapeHTML(product.name)}"
+          alt="${escapeHTML(product.name || "Product")}"
           loading="lazy"
         >
       `
@@ -98,11 +99,14 @@ function displayProducts(items) {
           </span>
 
           <h3>
-            ${escapeHTML(product.name)}
+            ${escapeHTML(product.name || "Unnamed Product")}
           </h3>
 
           <p>
-            ${escapeHTML(product.description || "No description available.")}
+            ${escapeHTML(
+              product.description ||
+              "No description available."
+            )}
           </p>
 
           <div class="product-bottom">
@@ -112,7 +116,8 @@ function displayProducts(items) {
             </strong>
 
             <button
-              onclick="orderProduct('${escapeJS(product.name)}')"
+              type="button"
+              onclick="openOrderModal('${escapeJS(String(product.id))}')"
             >
               Order
             </button>
@@ -151,11 +156,14 @@ function searchProducts() {
 
   const filtered = products.filter(product => {
 
-    const name = (product.name || "").toLowerCase();
+    const name =
+      (product.name || "").toLowerCase();
 
-    const category = (product.category || "").toLowerCase();
+    const category =
+      (product.category || "").toLowerCase();
 
-    const description = (product.description || "").toLowerCase();
+    const description =
+      (product.description || "").toLowerCase();
 
 
     return (
@@ -200,39 +208,366 @@ function filterProducts(category) {
 
 
 // ==========================================
-// ORDER PRODUCT
+// OPEN ORDER MODAL
 // ==========================================
 
-function orderProduct(productName) {
+function openOrderModal(productId) {
 
-  const message =
-    `Hi Luffy Store, saya berminat dengan produk: ${productName}`;
-
-
-  // ========================================
-  // TUKAR NOMBOR WHATSAPP KAT SINI
-  // Contoh: 60123456789
-  // ========================================
-
-  const whatsappNumber = "601XXXXXXXXX";
-
-
-  if (whatsappNumber.includes("X")) {
-
-    alert(
-      "Sila set nombor WhatsApp Luffy Store terlebih dahulu."
+  const product =
+    products.find(
+      item =>
+        String(item.id) === String(productId)
     );
+
+
+  if (!product) {
+
+    alert("Product not found.");
 
     return;
   }
 
 
-  const url =
-    `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+  document.getElementById(
+    "orderProductId"
+  ).value =
+    product.id;
 
 
-  window.open(url, "_blank");
+  document.getElementById(
+    "orderProductPrice"
+  ).value =
+    Number(product.price || 0);
+
+
+  document.getElementById(
+    "orderProductName"
+  ).textContent =
+    product.name || "Product";
+
+
+  document.getElementById(
+    "orderPrice"
+  ).textContent =
+    `RM ${Number(product.price || 0).toFixed(2)}`;
+
+
+  document.getElementById(
+    "customerName"
+  ).value = "";
+
+
+  document.getElementById(
+    "customerPhone"
+  ).value = "";
+
+
+  document.getElementById(
+    "orderMessage"
+  ).textContent = "";
+
+
+  document.getElementById(
+    "orderMessage"
+  ).className =
+    "admin-message";
+
+
+  document.getElementById(
+    "orderModal"
+  ).classList.add("show");
+
 }
+
+
+// ==========================================
+// CLOSE ORDER MODAL
+// ==========================================
+
+function closeOrderModal() {
+
+  const modal =
+    document.getElementById("orderModal");
+
+
+  modal.classList.remove("show");
+
+}
+
+
+// ==========================================
+// SUBMIT ORDER
+// ==========================================
+
+async function submitOrder(event) {
+
+  event.preventDefault();
+
+
+  const submitButton =
+    document.getElementById(
+      "submitOrderBtn"
+    );
+
+
+  const message =
+    document.getElementById(
+      "orderMessage"
+    );
+
+
+  const productId =
+    document.getElementById(
+      "orderProductId"
+    ).value;
+
+
+  const customerName =
+    document.getElementById(
+      "customerName"
+    ).value.trim();
+
+
+  const customerPhone =
+    document.getElementById(
+      "customerPhone"
+    ).value.trim();
+
+
+  const product =
+    products.find(
+      item =>
+        String(item.id) ===
+        String(productId)
+    );
+
+
+  if (!product) {
+
+    message.textContent =
+      "Product not found.";
+
+    message.className =
+      "admin-message error";
+
+    return;
+  }
+
+
+  if (!customerName) {
+
+    message.textContent =
+      "Please enter your name.";
+
+    message.className =
+      "admin-message error";
+
+    return;
+  }
+
+
+  if (!customerPhone) {
+
+    message.textContent =
+      "Please enter your WhatsApp number.";
+
+    message.className =
+      "admin-message error";
+
+    return;
+  }
+
+
+  submitButton.disabled = true;
+
+  submitButton.textContent =
+    "Submitting...";
+
+
+  message.textContent = "";
+
+
+  try {
+
+    const orderData = {
+
+      product_id:
+        product.id,
+
+      product_name:
+        product.name,
+
+      customer_name:
+        customerName,
+
+      customer_phone:
+        customerPhone,
+
+      price:
+        Number(product.price || 0),
+
+      status:
+        "pending"
+
+    };
+
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("Orders")
+        .insert([
+          orderData
+        ])
+        .select();
+
+
+    if (error) {
+
+      console.error(
+        "ORDER ERROR:",
+        error
+      );
+
+      throw error;
+    }
+
+
+    console.log(
+      "Order created:",
+      data
+    );
+
+
+    message.textContent =
+      "Order submitted successfully! Admin will contact you.";
+
+    message.className =
+      "admin-message success";
+
+
+    submitButton.textContent =
+      "Order Submitted ✓";
+
+
+    setTimeout(
+      () => {
+
+        closeOrderModal();
+
+        submitButton.disabled =
+          false;
+
+        submitButton.textContent =
+          "Submit Order";
+
+      },
+      1800
+    );
+
+  }
+
+  catch (error) {
+
+    console.error(
+      "ORDER ERROR:",
+      error
+    );
+
+
+    message.textContent =
+      error.message ||
+      "Failed to submit order.";
+
+    message.className =
+      "admin-message error";
+
+
+    submitButton.disabled =
+      false;
+
+    submitButton.textContent =
+      "Submit Order";
+
+  }
+
+}
+
+
+// ==========================================
+// ORDER EVENTS
+// ==========================================
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    const orderForm =
+      document.getElementById(
+        "orderForm"
+      );
+
+
+    const closeButton =
+      document.getElementById(
+        "closeOrderModal"
+      );
+
+
+    const modal =
+      document.getElementById(
+        "orderModal"
+      );
+
+
+    if (orderForm) {
+
+      orderForm.addEventListener(
+        "submit",
+        submitOrder
+      );
+
+    }
+
+
+    if (closeButton) {
+
+      closeButton.addEventListener(
+        "click",
+        closeOrderModal
+      );
+
+    }
+
+
+    if (modal) {
+
+      modal.addEventListener(
+        "click",
+        event => {
+
+          if (
+            event.target === modal
+          ) {
+
+            closeOrderModal();
+
+          }
+
+        }
+      );
+
+    }
+
+
+    // LOAD PRODUCTS
+
+    loadProducts();
+
+  }
+);
 
 
 // ==========================================
@@ -241,12 +576,13 @@ function orderProduct(productName) {
 
 function escapeHTML(value) {
 
-  return String(value)
+  return String(value ?? "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+
 }
 
 
@@ -256,24 +592,11 @@ function escapeHTML(value) {
 
 function escapeJS(value) {
 
-  return String(value)
+  return String(value ?? "")
     .replace(/\\/g, "\\\\")
     .replace(/'/g, "\\'")
     .replace(/"/g, '\\"')
     .replace(/\n/g, "\\n")
     .replace(/\r/g, "\\r");
+
 }
-
-
-// ==========================================
-// START WEBSITE
-// ==========================================
-
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
-
-    loadProducts();
-
-  }
-);
