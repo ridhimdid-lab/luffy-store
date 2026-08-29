@@ -455,4 +455,118 @@ footer {
 
 .product-bottom button:hover {
   background: #1d4ed8;
+}/* ==========================================
+   ADMIN LOGIN
+========================================== */
+
+.admin-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(37, 99, 235, 0.15),
+      transparent 45%
+    ),
+    #070b14;
+}
+
+.admin-box {
+  width: 100%;
+  max-width: 420px;
+
+  padding: 40px;
+
+  background: #0d1422;
+  border: 1px solid #1d2939;
+  border-radius: 18px;
+
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+.admin-label {
+  margin-top: 25px;
+
+  color: #3b82f6;
+
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.admin-box h1 {
+  margin-top: 8px;
+  font-size: 32px;
+}
+
+.admin-subtitle {
+  margin: 8px 0 30px;
+
+  color: #7f8ba0;
+  font-size: 14px;
+}
+
+#loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+#loginForm label {
+  margin-top: 10px;
+
+  color: #cbd5e1;
+  font-size: 13px;
+}
+
+#loginForm input {
+  width: 100%;
+  padding: 13px;
+
+  background: #070b14;
+  color: white;
+
+  border: 1px solid #263348;
+  border-radius: 8px;
+
+  outline: none;
+}
+
+#loginForm input:focus {
+  border-color: #2563eb;
+}
+
+#loginBtn {
+  margin-top: 20px;
+  padding: 13px;
+
+  background: #2563eb;
+  color: white;
+
+  border: 0;
+  border-radius: 8px;
+
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#loginBtn:hover {
+  background: #1d4ed8;
+}
+
+#loginBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+#loginError {
+  margin-top: 12px;
+
+  color: #f87171;
+  font-size: 13px;
 }
