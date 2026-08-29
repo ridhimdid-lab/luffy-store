@@ -2,496 +2,166 @@
 // ADMIN DASHBOARD
 // ==========================================
 
-<head>
+const grid =
+  document.getElementById("productsAdminGrid");
 
-  <meta charset="UTF-8">
+const logoutBtn =
+  document.getElementById("logoutBtn");
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+const addProductBtn =
+  document.getElementById("addProductBtn");
 
-  <title>Luffy Store — Dashboard</title>
+const modal =
+  document.getElementById("productModal");
 
-  <link rel="stylesheet" href="/style.css">
+const closeModalBtn =
+  document.getElementById("closeModalBtn");
 
-</head>
+const productForm =
+  document.getElementById("productForm");
 
+const imageInput =
+  document.getElementById("productImage");
 
-<body class="admin-body">
+const imagePreview =
+  document.getElementById("imagePreview");
 
+const saveProductBtn =
+  document.getElementById("saveProductBtn");
 
-  <!-- SIDEBAR -->
-
-  <aside class="admin-sidebar">
-
-    <div class="admin-sidebar-logo">
-      LUFFY<span>STORE</span>
-    </div>
-
-
-    <div class="admin-menu-label">
-      MANAGEMENT
-    </div>
+const message =
+  document.getElementById("adminMessage");
 
 
-    <a
-      href="/admin/dashboard"
-      class="admin-menu active"
-    >
-      <span>▣</span>
-      Products
-    </a>
+// ==========================================
+// CHECK AUTH
+// ==========================================
+
+async function checkAuth() {
+
+  const {
+    data: {
+      session
+    }
+  } = await supabaseClient.auth.getSession();
 
 
-    <a
-      href="#"
-      class="admin-menu disabled"
-    >
-      <span>▤</span>
-      Orders
-      <small>SOON</small>
-    </a>
+  if (!session) {
+
+    window.location.href = "/admin";
+
+    return null;
+
+  }
 
 
-    <a
-      href="#"
-      class="admin-menu disabled"
-    >
-      <span>◉</span>
-      Customers
-      <small>SOON</small>
-    </a>
+  const email =
+    document.getElementById("adminEmail");
 
 
-    <div class="admin-menu-label">
-      STORE
-    </div>
+  if (email) {
+
+    email.textContent =
+      session.user.email || "";
+
+  }
 
 
-    <a
-      href="/"
-      class="admin-menu"
-    >
-      <span>↗</span>
-      View Store
-    </a>
+  return session;
 
-  </aside>
+}
 
 
+// ==========================================
+// LOAD PRODUCTS
+// ==========================================
 
-  <!-- MAIN -->
+async function loadProducts() {
 
-  <main class="admin-main">
-
-
-    <!-- TOPBAR -->
-
-    <header class="admin-topbar">
-
-      <div>
-
-        <div class="admin-page-label">
-          ADMIN PANEL
-        </div>
-
-        <h1>
-          Dashboard
-        </h1>
-
-      </div>
+  const session =
+    await checkAuth();
 
 
-      <div class="admin-user">
-
-        <div class="admin-avatar">
-          A
-        </div>
+  if (!session) return;
 
 
-        <div class="admin-user-info">
-
-          <strong>
-            Administrator
-          </strong>
-
-          <span id="adminEmail">
-            Loading...
-          </span>
-
-        </div>
+  const {
+    data,
+    error
+  } = await supabaseClient
+    .from("Products")
+    .select("*")
+    .order("id", {
+      ascending: false
+    });
 
 
-        <button id="logoutBtn">
-          Logout
-        </button>
+  if (error) {
 
-      </div>
+    console.error(error);
 
-    </header>
+    showMessage(
+      error.message,
+      "error"
+    );
+
+    return;
+
+  }
 
 
+  renderProducts(data || []);
 
-    <!-- STATS -->
+  updateStats(data || []);
 
-    <section class="admin-stats">
+}
 
 
-      <div class="stat-card">
+// ==========================================
+// RENDER
+// ==========================================
 
-        <div class="stat-icon">
-          📦
-        </div>
+function renderProducts(products) {
 
-        <div>
+  if (!products.length) {
 
-          <span>
-            Total Products
-          </span>
+    grid.innerHTML = `
+      <div class="empty">
 
-          <strong id="totalProducts">
-            —
-          </strong>
+        <h3>
+          No Products
+        </h3>
 
-        </div>
+        <p>
+          Add your first product.
+        </p>
 
       </div>
+    `;
 
+    return;
 
+  }
 
-      <div class="stat-card">
 
-        <div class="stat-icon green">
-          ✓
-        </div>
+  grid.innerHTML = "";
 
-        <div>
 
-          <span>
-            Available
-          </span>
+  products.forEach(product => {
 
-          <strong id="availableProducts">
-            —
-          </strong>
+    const card =
+      document.createElement("div");
 
-        </div>
+    card.className =
+      "admin-product-card";
 
-      </div>
 
+    let imageHTML;
 
 
-      <div class="stat-card">
+    if (product.image_url) {
 
-        <div class="stat-icon red">
-          ×
-        </div>
-
-        <div>
-
-          <span>
-            Sold
-          </span>
-
-          <strong id="soldProducts">
-            —
-          </strong>
-
-        </div>
-
-      </div>
-
-
-
-      <div class="stat-card">
-
-        <div class="stat-icon purple">
-          RM
-        </div>
-
-        <div>
-
-          <span>
-            Store Value
-          </span>
-
-          <strong id="storeValue">
-            —
-          </strong>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-
-    <!-- PRODUCTS -->
-
-    <section class="products-panel">
-
-
-      <div class="products-panel-header">
-
-        <div>
-
-          <h2>
-            Products
-          </h2>
-
-          <p>
-            Manage your store inventory.
-          </p>
-
-        </div>
-
-
-        <button
-          id="addProductBtn"
-          class="add-product-btn"
-          type="button"
-        >
-          + Add Product
-        </button>
-
-      </div>
-
-
-      <div
-        id="adminMessage"
-        class="admin-message"
-      ></div>
-
-
-      <div
-        id="productsAdminGrid"
-        class="admin-products-grid"
-      >
-
-        <div class="empty">
-
-          <h3>
-            Loading...
-          </h3>
-
-          <p>
-            Loading products...
-          </p>
-
-        </div>
-
-      </div>
-
-    </section>
-
-  </main>
-
-
-
-  <!-- PRODUCT MODAL -->
-
-  <div
-    id="productModal"
-    class="modal"
-  >
-
-    <div class="modal-box">
-
-
-      <div class="modal-header">
-
-        <div>
-
-          <div class="admin-page-label">
-            PRODUCT MANAGEMENT
-          </div>
-
-          <h2 id="modalTitle">
-            Add Product
-          </h2>
-
-        </div>
-
-
-        <button
-          id="closeModalBtn"
-          class="close-modal"
-          type="button"
-        >
-          ×
-        </button>
-
-      </div>
-
-
-
-      <form id="productForm">
-
-
-        <input
-          type="hidden"
-          id="productId"
-        >
-
-
-        <!-- PRODUCT NAME -->
-
-        <label for="productName">
-          Product Name
-        </label>
-
-        <input
-          type="text"
-          id="productName"
-          placeholder="ML Account Mythic"
-          required
-        >
-
-
-
-        <!-- CATEGORY -->
-
-        <label for="productCategory">
-          Category
-        </label>
-
-        <select
-          id="productCategory"
-          required
-        >
-
-          <option value="ml">
-            ML Account
-          </option>
-
-          <option value="efootball">
-            eFootball
-          </option>
-
-          <option value="apk">
-            APK
-          </option>
-
-          <option value="web">
-            Web Building
-          </option>
-
-          <option value="other">
-            Other
-          </option>
-
-        </select>
-
-
-
-        <!-- DESCRIPTION -->
-
-        <label for="productDescription">
-          Description
-        </label>
-
-        <textarea
-          id="productDescription"
-          placeholder="Product description..."
-        ></textarea>
-
-
-
-        <!-- PRICE -->
-
-        <label for="productPrice">
-          Price (RM)
-        </label>
-
-        <input
-          type="number"
-          id="productPrice"
-          min="0"
-          step="0.01"
-          placeholder="25.00"
-          required
-        >
-
-
-
-        <!-- IMAGE UPLOAD -->
-
-        <label for="productImage">
-          Product Image
-        </label>
-
-        <input
-          type="file"
-          id="productImage"
-          accept="image/png,image/jpeg,image/webp"
-        >
-
-
-        <!-- IMAGE PREVIEW -->
-
-        <div
-          id="imagePreview"
-          class="image-preview"
-        ></div>
-
-
-
-        <!-- STATUS -->
-
-        <label for="productStatus">
-          Status
-        </label>
-
-        <select
-          id="productStatus"
-          required
-        >
-
-          <option value="available">
-            Available
-          </option>
-
-          <option value="sold">
-            Sold
-          </option>
-
-          <option value="hidden">
-            Hidden
-          </option>
-
-        </select>
-
-
-
-        <!-- SAVE -->
-
-        <button
-          type="submit"
-          id="saveProductBtn"
-          class="save-product-btn"
-        >
-          Save Product
-        </button>
-
-      </form>
-
-    </div>
-
-  </div>
-
-
-
-  <!-- SCRIPTS -->
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <script src="/supabase.js"></script>
-
-  <script src="/admin-dashboard.js"></script>
-
-
-</body>
-
-</html>
+      imageHTML = `
+        <img
+          src="${escapeHTML(product.image_url)}"
+          alt="${escapeHTML(product.name || "
