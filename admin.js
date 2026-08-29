@@ -45,6 +45,6 @@ loginForm.addEventListener("submit", async (event) => {
   }
 
 
-  window.location.href = "admin-dashboard.html";
+  window.location.href = "admin/dashboard";
 
 });
