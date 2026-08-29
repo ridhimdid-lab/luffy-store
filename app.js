@@ -21,7 +21,7 @@ async function loadProducts() {
   `;
 
   const { data, error } = await supabaseClient
-    .from("products")
+    .from("Products")
     .select("*")
     .eq("status", "available")
     .order("created_at", {
