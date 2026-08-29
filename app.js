@@ -7,12 +7,14 @@ let products = [];
 
 
 // ==========================================
-// LOAD PRODUCTS FROM SUPABASE
+// LOAD PRODUCTS
 // ==========================================
 
 async function loadProducts() {
 
   const grid = document.getElementById("productGrid");
+
+  if (!grid) return;
 
   grid.innerHTML = `
     <div class="empty">
@@ -56,6 +58,8 @@ async function loadProducts() {
 function displayProducts(items) {
 
   const grid = document.getElementById("productGrid");
+
+  if (!grid) return;
 
   if (!items || items.length === 0) {
 
@@ -139,11 +143,15 @@ function displayProducts(items) {
 
 function searchProducts() {
 
-  const input = document
-    .getElementById("searchInput")
-    .value
-    .trim()
-    .toLowerCase();
+  const inputElement =
+    document.getElementById("searchInput");
+
+  if (!inputElement) return;
+
+  const input =
+    inputElement.value
+      .trim()
+      .toLowerCase();
 
 
   if (!input) {
@@ -154,25 +162,29 @@ function searchProducts() {
   }
 
 
-  const filtered = products.filter(product => {
+  const filtered =
+    products.filter(product => {
 
-    const name =
-      (product.name || "").toLowerCase();
+      const name =
+        (product.name || "")
+          .toLowerCase();
 
-    const category =
-      (product.category || "").toLowerCase();
+      const category =
+        (product.category || "")
+          .toLowerCase();
 
-    const description =
-      (product.description || "").toLowerCase();
+      const description =
+        (product.description || "")
+          .toLowerCase();
 
 
-    return (
-      name.includes(input) ||
-      category.includes(input) ||
-      description.includes(input)
-    );
+      return (
+        name.includes(input) ||
+        category.includes(input) ||
+        description.includes(input)
+      );
 
-  });
+    });
 
 
   displayProducts(filtered);
@@ -193,14 +205,16 @@ function filterProducts(category) {
   }
 
 
-  const filtered = products.filter(product => {
+  const filtered =
+    products.filter(product => {
 
-    return (
-      (product.category || "").toLowerCase() ===
-      category.toLowerCase()
-    );
+      return (
+        (product.category || "")
+          .toLowerCase() ===
+        category.toLowerCase()
+      );
 
-  });
+    });
 
 
   displayProducts(filtered);
@@ -216,7 +230,8 @@ function openOrderModal(productId) {
   const product =
     products.find(
       item =>
-        String(item.id) === String(productId)
+        String(item.id) ===
+        String(productId)
     );
 
 
@@ -228,55 +243,62 @@ function openOrderModal(productId) {
   }
 
 
-  document.getElementById(
-    "orderProductId"
-  ).value =
+  const modal =
+    document.getElementById("orderModal");
+
+  const productIdInput =
+    document.getElementById("orderProductId");
+
+  const priceInput =
+    document.getElementById("orderProductPrice");
+
+  const productName =
+    document.getElementById("orderProductName");
+
+  const price =
+    document.getElementById("orderPrice");
+
+  const customerName =
+    document.getElementById("customerName");
+
+  const customerPhone =
+    document.getElementById("customerPhone");
+
+  const message =
+    document.getElementById("orderMessage");
+
+
+  if (!modal) {
+
+    alert("Order system is not loaded.");
+
+    return;
+  }
+
+
+  productIdInput.value =
     product.id;
 
-
-  document.getElementById(
-    "orderProductPrice"
-  ).value =
+  priceInput.value =
     Number(product.price || 0);
 
-
-  document.getElementById(
-    "orderProductName"
-  ).textContent =
+  productName.textContent =
     product.name || "Product";
 
-
-  document.getElementById(
-    "orderPrice"
-  ).textContent =
+  price.textContent =
     `RM ${Number(product.price || 0).toFixed(2)}`;
 
+  customerName.value = "";
 
-  document.getElementById(
-    "customerName"
-  ).value = "";
+  customerPhone.value = "";
 
+  message.textContent = "";
 
-  document.getElementById(
-    "customerPhone"
-  ).value = "";
-
-
-  document.getElementById(
-    "orderMessage"
-  ).textContent = "";
-
-
-  document.getElementById(
-    "orderMessage"
-  ).className =
+  message.className =
     "admin-message";
 
 
-  document.getElementById(
-    "orderModal"
-  ).classList.add("show");
-
+  modal.classList.add("show");
 }
 
 
@@ -289,9 +311,9 @@ function closeOrderModal() {
   const modal =
     document.getElementById("orderModal");
 
+  if (!modal) return;
 
   modal.classList.remove("show");
-
 }
 
 
@@ -305,33 +327,23 @@ async function submitOrder(event) {
 
 
   const submitButton =
-    document.getElementById(
-      "submitOrderBtn"
-    );
-
+    document.getElementById("submitOrderBtn");
 
   const message =
-    document.getElementById(
-      "orderMessage"
-    );
-
+    document.getElementById("orderMessage");
 
   const productId =
-    document.getElementById(
-      "orderProductId"
-    ).value;
-
+    document.getElementById("orderProductId").value;
 
   const customerName =
-    document.getElementById(
-      "customerName"
-    ).value.trim();
-
+    document.getElementById("customerName")
+      .value
+      .trim();
 
   const customerPhone =
-    document.getElementById(
-      "customerPhone"
-    ).value.trim();
+    document.getElementById("customerPhone")
+      .value
+      .trim();
 
 
   const product =
@@ -383,11 +395,17 @@ async function submitOrder(event) {
   submitButton.textContent =
     "Submitting...";
 
-
   message.textContent = "";
+
+  message.className =
+    "admin-message";
 
 
   try {
+
+    // ======================================
+    // ORDER DATA
+    // ======================================
 
     const orderData = {
 
@@ -412,16 +430,20 @@ async function submitOrder(event) {
     };
 
 
-    const {
-      data,
-      error
-    } =
+    console.log(
+      "Submitting order:",
+      orderData
+    );
+
+
+    // ======================================
+    // INSERT ORDER
+    // ======================================
+
+    const { error } =
       await supabaseClient
         .from("Orders")
-        .insert([
-          orderData
-        ])
-        .select();
+        .insert(orderData);
 
 
     if (error) {
@@ -435,9 +457,12 @@ async function submitOrder(event) {
     }
 
 
+    // ======================================
+    // SUCCESS
+    // ======================================
+
     console.log(
-      "Order created:",
-      data
+      "Order submitted successfully."
     );
 
 
@@ -452,22 +477,22 @@ async function submitOrder(event) {
       "Order Submitted ✓";
 
 
-    setTimeout(
-      () => {
+    // Close modal after success
 
-        closeOrderModal();
+    setTimeout(() => {
 
-        submitButton.disabled =
-          false;
+      closeOrderModal();
 
-        submitButton.textContent =
-          "Submit Order";
+      submitButton.disabled =
+        false;
 
-      },
-      1800
-    );
+      submitButton.textContent =
+        "Submit Order";
+
+    }, 1800);
 
   }
+
 
   catch (error) {
 
@@ -500,74 +525,58 @@ async function submitOrder(event) {
 // ORDER EVENTS
 // ==========================================
 
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
+function setupOrderEvents() {
 
-    const orderForm =
-      document.getElementById(
-        "orderForm"
-      );
+  const orderForm =
+    document.getElementById("orderForm");
 
+  const closeButton =
+    document.getElementById("closeOrderModal");
 
-    const closeButton =
-      document.getElementById(
-        "closeOrderModal"
-      );
+  const modal =
+    document.getElementById("orderModal");
 
 
-    const modal =
-      document.getElementById(
-        "orderModal"
-      );
+  if (orderForm) {
 
-
-    if (orderForm) {
-
-      orderForm.addEventListener(
-        "submit",
-        submitOrder
-      );
-
-    }
-
-
-    if (closeButton) {
-
-      closeButton.addEventListener(
-        "click",
-        closeOrderModal
-      );
-
-    }
-
-
-    if (modal) {
-
-      modal.addEventListener(
-        "click",
-        event => {
-
-          if (
-            event.target === modal
-          ) {
-
-            closeOrderModal();
-
-          }
-
-        }
-      );
-
-    }
-
-
-    // LOAD PRODUCTS
-
-    loadProducts();
+    orderForm.addEventListener(
+      "submit",
+      submitOrder
+    );
 
   }
-);
+
+
+  if (closeButton) {
+
+    closeButton.addEventListener(
+      "click",
+      closeOrderModal
+    );
+
+  }
+
+
+  if (modal) {
+
+    modal.addEventListener(
+      "click",
+      event => {
+
+        if (
+          event.target === modal
+        ) {
+
+          closeOrderModal();
+
+        }
+
+      }
+    );
+
+  }
+
+}
 
 
 // ==========================================
@@ -587,7 +596,7 @@ function escapeHTML(value) {
 
 
 // ==========================================
-// ESCAPE JAVASCRIPT STRING
+// ESCAPE JAVASCRIPT
 // ==========================================
 
 function escapeJS(value) {
@@ -600,3 +609,19 @@ function escapeJS(value) {
     .replace(/\r/g, "\\r");
 
 }
+
+
+// ==========================================
+// START WEBSITE
+// ==========================================
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    setupOrderEvents();
+
+    loadProducts();
+
+  }
+);
