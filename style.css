@@ -1736,4 +1736,29 @@ footer {
     width: 100%;
   }
 
+}/* IMAGE UPLOAD */
+
+#productImage {
+  padding: 10px !important;
+  cursor: pointer;
+}
+
+.image-preview {
+  display: none;
+  width: 100%;
+  margin-top: 8px;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid #263348;
+}
+
+.image-preview.show {
+  display: block;
+}
+
+.image-preview img {
+  display: block;
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
 }
