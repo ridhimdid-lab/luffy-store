@@ -20,9 +20,7 @@
 <body class="admin-body">
 
 
-  <!-- ================================
-       SIDEBAR
-  ================================= -->
+  <!-- SIDEBAR -->
 
   <aside class="admin-sidebar">
 
@@ -51,11 +49,7 @@
     >
       <span>▤</span>
       Orders
-
-      <small>
-        SOON
-      </small>
-
+      <small>SOON</small>
     </a>
 
 
@@ -65,11 +59,7 @@
     >
       <span>◉</span>
       Customers
-
-      <small>
-        SOON
-      </small>
-
+      <small>SOON</small>
     </a>
 
 
@@ -90,9 +80,7 @@
 
 
 
-  <!-- ================================
-       MAIN
-  ================================= -->
+  <!-- MAIN -->
 
   <main class="admin-main">
 
@@ -144,9 +132,7 @@
 
 
 
-    <!-- ================================
-         STATS
-    ================================= -->
+    <!-- STATS -->
 
     <section class="admin-stats">
 
@@ -241,9 +227,7 @@
 
 
 
-    <!-- ================================
-         PRODUCTS
-    ================================= -->
+    <!-- PRODUCTS -->
 
     <section class="products-panel">
 
@@ -266,6 +250,7 @@
         <button
           id="addProductBtn"
           class="add-product-btn"
+          type="button"
         >
           + Add Product
         </button>
@@ -304,9 +289,7 @@
 
 
 
-  <!-- ================================
-       PRODUCT MODAL
-  ================================= -->
+  <!-- PRODUCT MODAL -->
 
   <div
     id="productModal"
@@ -352,7 +335,9 @@
         >
 
 
-        <label>
+        <!-- PRODUCT NAME -->
+
+        <label for="productName">
           Product Name
         </label>
 
@@ -365,7 +350,9 @@
 
 
 
-        <label>
+        <!-- CATEGORY -->
+
+        <label for="productCategory">
           Category
         </label>
 
@@ -398,7 +385,9 @@
 
 
 
-        <label>
+        <!-- DESCRIPTION -->
+
+        <label for="productDescription">
           Description
         </label>
 
@@ -409,7 +398,9 @@
 
 
 
-        <label>
+        <!-- PRICE -->
+
+        <label for="productPrice">
           Price (RM)
         </label>
 
@@ -424,20 +415,31 @@
 
 
 
-        <label>
-          Image URL
+        <!-- IMAGE UPLOAD -->
+
+        <label for="productImage">
+          Product Image
         </label>
 
         <input
-          type="url"
+          type="file"
           id="productImage"
-          placeholder="https://..."
-          required
+          accept="image/png,image/jpeg,image/webp"
         >
 
 
+        <!-- IMAGE PREVIEW -->
 
-        <label>
+        <div
+          id="imagePreview"
+          class="image-preview"
+        ></div>
+
+
+
+        <!-- STATUS -->
+
+        <label for="productStatus">
           Status
         </label>
 
@@ -462,6 +464,8 @@
 
 
 
+        <!-- SAVE -->
+
         <button
           type="submit"
           id="saveProductBtn"
@@ -478,15 +482,14 @@
 
 
 
-  <!-- ================================
-       SCRIPTS
-  ================================= -->
+  <!-- SCRIPTS -->
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script src="/supabase.js"></script>
 
   <script src="/admin-dashboard.js"></script>
+
 
 </body>
 
