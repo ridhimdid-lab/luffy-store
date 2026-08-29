@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Luffy Store - Admin</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div class="admin-page">
+
+    <div class="admin-box">
+
+      <div class="logo">LUFFY<span>STORE</span></div>
+
+      <p class="admin-label">ADMIN PANEL</p>
+
+      <h1>Welcome Back</h1>
+
+      <p class="admin-subtitle">
+        Login to manage your store.
+      </p>
+
+
+      <form id="loginForm">
+
+        <label>Email</label>
+
+        <input
+          type="email"
+          id="email"
+          placeholder="Admin email"
+          required
+        >
+
+
+        <label>Password</label>
+
+        <input
+          type="password"
+          id="password"
+          placeholder="Password"
+          required
+        >
+
+
+        <button type="submit" id="loginBtn">
+          Login
+        </button>
+
+        <p id="loginError"></p>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="supabase.js"></script>
+
+  <script src="admin.js"></script>
+
+</body>
+</html>
