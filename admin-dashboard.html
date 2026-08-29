@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Luffy Store - Dashboard</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <header class="admin-navbar">
+
+    <div class="logo">
+      LUFFY<span>STORE</span>
+    </div>
+
+    <div class="admin-nav-right">
+
+      <span id="adminEmail">
+        Admin
+      </span>
+
+      <button id="logoutBtn">
+        Logout
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <main class="admin-dashboard">
+
+    <div class="dashboard-heading">
+
+      <div>
+        <p class="admin-label">
+          ADMIN PANEL
+        </p>
+
+        <h1>
+          Products
+        </h1>
+
+        <p>
+          Manage products in your store.
+        </p>
+      </div>
+
+      <button
+        class="add-product-btn"
+        id="addProductBtn"
+      >
+        + Add Product
+      </button>
+
+    </div>
+
+
+    <div
+      id="adminMessage"
+      class="admin-message"
+    ></div>
+
+
+    <div
+      id="productsAdminGrid"
+      class="admin-products-grid"
+    >
+
+      <div class="empty">
+        <h3>Loading...</h3>
+        <p>Loading products...</p>
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <!-- ADD / EDIT MODAL -->
+
+  <div
+    id="productModal"
+    class="modal"
+  >
+
+    <div class="modal-box">
+
+      <div class="modal-header">
+
+        <div>
+          <p class="admin-label">
+            PRODUCT
+          </p>
+
+          <h2 id="modalTitle">
+            Add Product
+          </h2>
+        </div>
+
+        <button
+          id="closeModalBtn"
+          class="close-modal"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <form id="productForm">
+
+        <input
+          type="hidden"
+          id="productId"
+        >
+
+
+        <label>
+          Product Name
+        </label>
+
+        <input
+          type="text"
+          id="productName"
+          placeholder="Example: ML Account Mythic"
+          required
+        >
+
+
+        <label>
+          Category
+        </label>
+
+        <select
+          id="productCategory"
+          required
+        >
+          <option value="ml">
+            ML Account
+          </option>
+
+          <option value="efootball">
+            eFootball
+          </option>
+
+          <option value="apk">
+            APK
+          </option>
+
+          <option value="web">
+            Web Building
+          </option>
+
+          <option value="other">
+            Other
+          </option>
+
+        </select>
+
+
+        <label>
+          Description
+        </label>
+
+        <textarea
+          id="productDescription"
+          placeholder="Product description..."
+        ></textarea>
+
+
+        <label>
+          Price (RM)
+        </label>
+
+        <input
+          type="number"
+          id="productPrice"
+          min="0"
+          step="0.01"
+          placeholder="25"
+          required
+        >
+
+
+        <label>
+          Image URL
+        </label>
+
+        <input
+          type="url"
+          id="productImage"
+          placeholder="https://..."
+          required
+        >
+
+
+        <label>
+          Status
+        </label>
+
+        <select
+          id="productStatus"
+          required
+        >
+
+          <option value="available">
+            Available
+          </option>
+
+          <option value="sold">
+            Sold
+          </option>
+
+          <option value="hidden">
+            Hidden
+          </option>
+
+        </select>
+
+
+        <button
+          type="submit"
+          id="saveProductBtn"
+          class="save-product-btn"
+        >
+          Save Product
+        </button>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="supabase.js"></script>
+
+  <script src="admin-dashboard.js"></script>
+
+</body>
+</html>
