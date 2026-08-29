@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,23 +12,38 @@
 
 <body>
 
+  <!-- =========================
+       NAVBAR
+  ========================== -->
+
   <header class="navbar">
-    <div class="logo">LUFFY<span>STORE</span></div>
+
+    <div class="logo">
+      LUFFY<span>STORE</span>
+    </div>
 
     <nav>
       <a href="#home">Home</a>
       <a href="#products">Store</a>
       <a href="#contact">Contact</a>
     </nav>
+
   </header>
 
 
   <main>
 
-    <!-- HERO -->
+    <!-- =========================
+         HERO
+    ========================== -->
+
     <section class="hero" id="home">
+
       <div>
-        <p class="badge">SINCE 2025</p>
+
+        <p class="badge">
+          SINCE 2025
+        </p>
 
         <h1>
           Welcome to<br>
@@ -35,6 +51,324 @@
         </h1>
 
         <p class="hero-text">
+          Trusted marketplace for game accounts, APK,
+          web building & trusted middleman services.
+        </p>
+
+        <a href="#products" class="btn">
+          Browse Store
+        </a>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         CATEGORIES
+    ========================== -->
+
+    <section class="categories">
+
+      <h2>
+        Categories
+      </h2>
+
+      <div class="category-grid">
+
+        <button
+          type="button"
+          onclick="filterProducts('all')"
+        >
+          All
+        </button>
+
+        <button
+          type="button"
+          onclick="filterProducts('ml')"
+        >
+          ML Account
+        </button>
+
+        <button
+          type="button"
+          onclick="filterProducts('efootball')"
+        >
+          eFootball
+        </button>
+
+        <button
+          type="button"
+          onclick="filterProducts('apk')"
+        >
+          APK
+        </button>
+
+        <button
+          type="button"
+          onclick="filterProducts('web')"
+        >
+          Web Building
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         PRODUCTS
+    ========================== -->
+
+    <section
+      class="products"
+      id="products"
+    >
+
+      <div class="section-title">
+
+        <div>
+
+          <p class="small-title">
+            OUR PRODUCTS
+          </p>
+
+          <h2>
+            Latest Items
+          </h2>
+
+        </div>
+
+
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search product..."
+          oninput="searchProducts()"
+        >
+
+      </div>
+
+
+      <div
+        id="productGrid"
+        class="product-grid"
+      >
+
+        <div class="empty">
+
+          <h3>
+            Loading products...
+          </h3>
+
+          <p>
+            Please wait.
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         CONTACT
+    ========================== -->
+
+    <section
+      class="contact"
+      id="contact"
+    >
+
+      <h2>
+        Need Help?
+      </h2>
+
+      <p>
+        Contact Luffy Store for orders and enquiries.
+      </p>
+
+
+      <div class="contact-buttons">
+
+        <a
+          href="#"
+          class="contact-btn"
+        >
+          Telegram
+        </a>
+
+        <a
+          href="#"
+          class="contact-btn"
+        >
+          WhatsApp
+        </a>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- =========================
+       ORDER MODAL
+  ========================== -->
+
+  <div
+    id="orderModal"
+    class="modal"
+  >
+
+    <div class="modal-box">
+
+
+      <!-- HEADER -->
+
+      <div class="modal-header">
+
+        <div>
+
+          <div class="admin-page-label">
+            LUFFY STORE
+          </div>
+
+          <h2>
+            Place Order
+          </h2>
+
+          <p
+            id="orderProductName"
+            style="
+              margin-top: 5px;
+              color: #7f8ba0;
+              font-size: 14px;
+            "
+          >
+          </p>
+
+        </div>
+
+
+        <button
+          id="closeOrderModal"
+          class="close-modal"
+          type="button"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <!-- ORDER FORM -->
+
+      <form id="orderForm">
+
+
+        <!-- PRODUCT ID -->
+
+        <input
+          type="hidden"
+          id="orderProductId"
+        >
+
+
+        <!-- PRODUCT PRICE -->
+
+        <input
+          type="hidden"
+          id="orderProductPrice"
+        >
+
+
+        <!-- CUSTOMER NAME -->
+
+        <label for="customerName">
+          Your Name
+        </label>
+
+        <input
+          type="text"
+          id="customerName"
+          placeholder="Enter your name"
+          required
+        >
+
+
+        <!-- WHATSAPP -->
+
+        <label for="customerPhone">
+          WhatsApp Number
+        </label>
+
+        <input
+          type="tel"
+          id="customerPhone"
+          placeholder="60123456789"
+          required
+        >
+
+
+        <!-- PRICE -->
+
+        <div
+          id="orderPrice"
+          style="
+            margin-top: 15px;
+            padding: 14px;
+            background: #070b14;
+            border: 1px solid #263348;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #60a5fa;
+          "
+        >
+          RM 0.00
+        </div>
+
+
+        <!-- SUBMIT -->
+
+        <button
+          type="submit"
+          id="submitOrderBtn"
+          class="save-product-btn"
+        >
+          Submit Order
+        </button>
+
+
+        <!-- MESSAGE -->
+
+        <div
+          id="orderMessage"
+          class="admin-message"
+        ></div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       SCRIPTS
+  ========================== -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="supabase.js"></script>
+
+  <script src="app.js"></script>
+
+</body>
+
+</html>        <p class="hero-text">
           Trusted marketplace for game accounts, APK,
           web building & trusted middleman services.
         </p>
